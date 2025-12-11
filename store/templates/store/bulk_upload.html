@@ -1,0 +1,83 @@
+{% load static %}
+{% extends "store/base.html" %}
+
+{% block title %}Bulk Upload - Ecom{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">📤 Bulk Upload</h1>
+<p class="page-subtitle">Upload Brands, Categories, Products, Images from one place.</p>
+
+<div class="card" style="padding:20px; max-width:600px; margin:auto;">
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Upload Type -->
+        <label><strong>Select Upload Type:</strong></label>
+        <select name="upload_type" required class="form-select">
+            <option value="">-- Select --</option>
+            <option value="brand_create">Brand Bulk Create</option>
+            <option value="category_create">Category Bulk Create</option>
+            <option value="product_create">Product Bulk Create</option>
+            <option value="product_update">Product Bulk Update</option>
+        </select>
+
+        <br>
+
+        <!-- CSV File Upload -->
+        <label><strong>CSV File:</strong></label>
+        <input type="file" name="csv_file" accept=".csv" required class="form-input">
+        <small style="color:gray;">CSV is required.</small>
+
+        <br><br>
+
+        <!-- ZIP File Upload -->
+        <label><strong>ZIP Images File (optional):</strong></label>
+        <input type="file" name="zip_file" accept=".zip" class="form-input">
+        <small style="color:gray;">Include images in ZIP. Filenames must match CSV.</small>
+
+        <br><br>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;">
+            🚀 Upload
+        </button>
+    </form>
+</div>
+
+<br>
+
+<!-- CSV Examples -->
+<div class="card" style="padding:20px; max-width:700px; margin:auto;">
+    <h3>📄 CSV Examples</h3>
+
+    <h4>1️⃣ Brand Create</h4>
+    <pre>
+name,slug
+Pepsi,pepsi
+Nestle,nestle
+    </pre>
+
+    <h4>2️⃣ Category Create</h4>
+    <pre>
+name,slug
+Beverages,beverages
+Snacks,snacks
+    </pre>
+
+    <h4>3️⃣ Product Create</h4>
+    <pre>
+sku,upc,name,description,price,stock,brand_id,category_id,image
+SKU1,UPC1,Pepsi 2L,Soft Drink,0.850,50,1,1,pepsi.jpg
+SKU2,UPC2,Milk 1L,Fresh Milk,0.400,120,2,3,milk.png
+    </pre>
+
+    <h4>4️⃣ Product Update</h4>
+    <pre>
+sku,price,stock
+SKU1,0.900,60
+SKU2,0.450,140
+    </pre>
+</div>
+
+{% endblock %}
