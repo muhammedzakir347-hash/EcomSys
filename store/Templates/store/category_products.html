@@ -1,0 +1,33 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ category.name }} - Ecom{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{{ category.name }}</h1>
+<p class="page-subtitle">Browse all products in this category.</p>
+
+<div class="product-grid">
+    {% for product in products %}
+        <div class="product-card">
+            <div class="product-image-wrapper">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="no-image">No Image</div>
+                {% endif %}
+            </div>
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">KWD {{ product.price }}</div>
+            <div class="product-stock">In stock: {{ product.stock }}</div>
+
+            <form method="post" action="{% url 'add_to_cart' product.id %}" class="add-to-cart-form">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="1" min="1">
+                <button type="submit" class="btn-primary btn-small">Add to Cart</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>No products in this category.</p>
+    {% endfor %}
+</div>
+{% endblock %}

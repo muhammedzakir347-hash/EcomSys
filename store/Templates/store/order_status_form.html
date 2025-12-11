@@ -1,0 +1,41 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Update Order Status - Ecom{% endblock %}
+
+{% block content %}
+
+    <!-- ✏️ Update Order Status (Staff Only) -->
+    <h1 class="page-title">Update Status for Order #{{ order.id }}</h1>
+    <p class="page-subtitle">
+        Current status:
+        <span class="status-badge status-{{ order.status }}">
+            {{ order.get_status_display }}
+        </span>
+    </p>
+
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_status"><strong>New Status</strong></label>
+                <select name="status" id="id_status">
+                    {% for value, label in order.STATUS_CHOICES %}
+                        <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top:10px;">
+                Save Status
+            </button>
+
+            <a href="{% url 'order_detail' order.id %}" class="btn-secondary" style="margin-left:8px;">
+                Cancel
+            </a>
+        </form>
+    </div>
+
+{% endblock %}

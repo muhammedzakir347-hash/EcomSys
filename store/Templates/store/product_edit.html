@@ -1,0 +1,88 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Edit Product - {{ product.name }}{% endblock %}
+
+{% block content %}
+
+<div class="profile-header">
+    <h1 class="page-title">Edit Product</h1>
+    <p class="page-subtitle">Update details for <strong>{{ product.name }}</strong>.</p>
+</div>
+
+<div class="product-form-card">
+    <form method="post" enctype="multipart/form-data" class="product-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <!-- SKU (read-only) -->
+        <div class="form-group">
+            {{ form.sku.label_tag }}
+            {{ form.sku }}
+            {{ form.sku.errors }}
+        </div>
+
+        <!-- UPC -->
+        <div class="form-group">
+            {{ form.upc.label_tag }}
+            {{ form.upc }}
+            {{ form.upc.errors }}
+        </div>
+
+        <!-- Name -->
+        <div class="form-group">
+            {{ form.name.label_tag }}
+            {{ form.name }}
+            {{ form.name.errors }}
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            {{ form.description.errors }}
+        </div>
+
+        <!-- Price -->
+        <div class="form-group">
+            {{ form.price.label_tag }}
+            {{ form.price }}
+            {{ form.price.errors }}
+        </div>
+
+        <!-- Stock -->
+        <div class="form-group">
+            {{ form.stock.label_tag }}
+            {{ form.stock }}
+            {{ form.stock.errors }}
+        </div>
+
+        <!-- Image -->
+        <div class="form-group">
+            {{ form.image.label_tag }}
+            {{ form.image }}
+            {{ form.image.errors }}
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+            {{ form.category.label_tag }}
+            {{ form.category }}
+            {{ form.category.errors }}
+        </div>
+
+        <!-- Brand -->
+        <div class="form-group">
+            {{ form.brand.label_tag }}
+            {{ form.brand }}
+            {{ form.brand.errors }}
+        </div>
+
+        <!-- Form actions -->
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save Changes</button>
+            <a href="{% url 'product_list' %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

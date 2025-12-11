@@ -1,0 +1,41 @@
+{% extends "store/base.html" %}
+{% load static %}
+
+{% block title %}{{ brand.name }} Products{% endblock %}
+
+{% block content %}
+
+<div class="brand-header">
+    {% if brand.image and brand.image.name %}
+        <img src="{{ brand.image.url }}" class="brand-logo" alt="{{ brand.name }}">
+    {% else %}
+        <!-- fallback logo if no image uploaded -->
+        <img src="{% static 'images/default-brand.png' %}" class="brand-logo" alt="{{ brand.name }}">
+    {% endif %}
+    <h1 class="brand-title">{{ brand.name }}</h1>
+</div>
+
+{% if products %}
+<div class="product-grid">
+    {% for product in products %}
+        <div class="product-card">
+            <a href="{% url 'product_detail' product.id %}">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <img src="/static/images/no-image.png" alt="No Image">
+                {% endif %}
+            </a>
+
+            <h3>{{ product.name }}</h3>
+            <p class="price">Rs {{ product.price }}</p>
+
+            <a href="{% url 'product_detail' product.id %}" class="btn-view">View Product</a>
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+    <p>No products found for this brand.</p>
+{% endif %}
+
+{% endblock %}

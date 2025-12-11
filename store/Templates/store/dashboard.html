@@ -1,0 +1,42 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Dashboard - Ecom{% endblock %}
+
+{% block content %}
+
+    <!-- 🧑‍💻 User Dashboard -->
+    <h1 class="page-title">User Dashboard</h1>
+    <p class="page-subtitle">Overview of your account and recent activity.</p>
+
+    <!-- 👋 Welcome + Order Count -->
+    <div class="dashboard-card">
+        <h2>Welcome, {{ request.user.username }} 👋</h2>
+        <p>
+            You currently have 
+            <strong>{{ order_count }}</strong> 
+            {{ order_count|pluralize:"order,orders" }}.
+        </p>
+        <a href="{% url 'order_list' %}" class="btn-primary" style="margin-top:10px;">
+            View All Orders
+        </a>
+    </div>
+
+    <!-- 📦 Recent Orders List -->
+    <div class="dashboard-card">
+        <h2>Recent Orders 📦</h2>
+
+        <ul class="dashboard-list">
+            {% for order in recent_orders %}
+                <li class="dashboard-list-item">
+                    <span><strong>Order #{{ order.id }}</strong></span>
+                    <span>{{ order.order_date|date:"Y-m-d H:i" }}</span>
+                    <span>{{ order.total_amount }} KD</span>
+                    <a href="{% url 'order_detail' order.id %}" class="btn-secondary btn-small">View</a>
+                </li>
+            {% empty %}
+                <li class="dashboard-list-item">You have no recent orders yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Order #{{ order.id }} - Ecom{% endblock %}
+
+{% block content %}
+
+    <!-- 📄 Order Details Page -->
+    <h1 class="page-title">Order #{{ order.id }}</h1>
+    <p class="page-subtitle">Full breakdown of items included in this order.</p>
+
+    {% if request.user.is_staff %}
+    <div style="margin-top:10px;">
+        <a href="{% url 'order_update_status' order.id %}" class="btn-secondary">
+            Edit Status
+        </a>
+        <a href="{% url 'order_delete' order.id %}" class="btn-secondary" style="margin-left:6px;">
+            Delete Order
+        </a>
+    </div>
+    {% endif %}
+
+
+    <!-- 🧾 Order metadata -->
+    <div class="order-detail-header card">
+        <p><strong>User:</strong> {{ order.user.username }}</p>
+        <p><strong>Date:</strong> {{ order.order_date|date:"Y-m-d H:i" }}</p>
+        <p>
+            <strong>Status:</strong>
+            <span class="status-badge status-{{ order.status }}">
+                {{ order.get_status_display }}
+            </span>
+        </p>
+        <p><strong>Total Items:</strong> {{ order.total_items }}</p>
+        <p><strong>Total Amount:</strong> {{ order.total_amount }} KD</p>
+    </div>
+
+    <!-- 📦 Order Items List -->
+    <h2 class="section-title">Items in this Order</h2>
+
+    <table class="order-items-table">
+        <tr>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price (each)</th>
+            <th>Total</th>
+        </tr>
+
+        {% for item in items %}
+        <tr>
+            <!-- Product Image -->
+            <td>
+                {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}"
+                         alt="{{ item.product.name }}"
+                         style="width:70px;height:70px;object-fit:cover;border-radius:6px;">
+                {% else %}
+                    <div style="
+                        width:70px;height:70px;background:#eee;border-radius:6px;
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:11px;">
+                        No Image
+                    </div>
+                {% endif %}
+            </td>
+
+            <!-- Product Name -->
+            <td>{{ item.product.name }}</td>
+
+            <!-- Quantity -->
+            <td>{{ item.quantity }}</td>
+
+            <!-- Price -->
+            <td>{{ item.product.price }} KD</td>
+
+            <!-- Line Total -->
+            <td>{{ item.line_total }} KD</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- 🔙 Back button -->
+    <a href="{% url 'order_list' %}" class="btn-primary">Back to Orders</a>
+
+{% endblock %}

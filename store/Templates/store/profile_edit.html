@@ -1,0 +1,53 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Edit Profile - Ecom{% endblock %}
+
+{% block content %}
+
+<!-- 📝 Page Header -->
+<div class="profile-header">
+    <h1 class="page-title">Edit Profile</h1>
+    <p class="page-subtitle">Update your personal and contact information.</p>
+</div>
+
+<!-- ✏️ Edit Profile Card -->
+<div class="profile-container" style="max-width:600px; grid-template-columns:1fr;">
+
+    <div class="profile-right" style="padding:25px 30px;">
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <!-- Phone Field -->
+            <div class="form-group">
+                <label class="profile-label">{{ form.phone.label }}</label>
+                {{ form.phone }}
+                {{ form.phone.errors }}
+            </div>
+
+            <!-- Address Field -->
+            <div class="form-group">
+                <label class="profile-label">{{ form.address.label }}</label>
+                {{ form.address }}
+                {{ form.address.errors }}
+            </div>
+
+            <!-- Buttons -->
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button type="submit" class="btn-primary" style="flex:1;">
+                    Save Changes
+                </button>
+
+                <a href="{% url 'profile' %}" class="btn-secondary" style="flex:1; text-align:center;">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Register - Ecom{% endblock %}
+
+{% block content %}
+
+    <!-- 🧾 Registration Page -->
+    <div class="auth-container">
+        <div class="auth-card">
+
+            <!-- Title + Subtitle -->
+            <h1 class="page-title" style="margin-bottom:4px;">Create an Account ✨</h1>
+            <p class="small-text">
+                Register to place orders, manage your cart, and view your order history.
+            </p>
+
+            <!-- Registration Form -->
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+
+                <!-- Display non-field errors (e.g., passwords mismatch) -->
+                {{ form.non_field_errors }}
+
+                <!-- Username -->
+                <div class="form-group">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    {{ form.password1.label_tag }}
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                    {{ form.password2.label_tag }}
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>
+
+                <!-- Register button -->
+                <button type="submit" class="btn-primary" style="width:100%;margin-top:10px;">
+                    Register
+                </button>
+            </form>
+
+            <!-- Login link -->
+            <p class="small-text" style="margin-top:14px;">
+                Already have an account?
+                <a href="{% url 'login' %}">Log in here</a> 👈
+            </p>
+
+        </div>
+    </div>
+
+{% endblock %}

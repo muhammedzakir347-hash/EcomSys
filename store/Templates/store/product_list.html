@@ -1,0 +1,216 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Products - Ecom{% endblock %}
+
+{% block content %}
+
+<div class="product-page-layout">
+
+    <!-- ========== FILTER SIDEBAR ========== -->
+    <form method="get" class="filters-card">
+        <h2 class="filters-title">Filters</h2>
+
+        {# Preserve current filters when clicking another one #}
+        {% if current_brand_slug %}
+            <input type="hidden" name="brand" value="{{ current_brand_slug }}">
+        {% endif %}
+        {% if current_category_slug %}
+            <input type="hidden" name="category" value="{{ current_category_slug }}">
+        {% endif %}
+
+        <!-- 🔹 CATEGORY FILTER (TOP, WITH IMAGES) -->
+        <div class="filter-section">
+            <div class="filter-section-header">
+                <span>Category</span>
+                <span class="filter-chevron">▾</span>
+            </div>
+
+            <!-- Search categories -->
+            <div class="brand-search">
+                <input type="text"
+                       id="categorySearchInput"
+                       placeholder="Search categories..."
+                       onkeyup="filterCategories()">
+            </div>
+
+            <!-- 2-column category grid -->
+            <div class="brand-filter-list" id="categoryFilterList">
+                {% for category in categories %}
+                    <button type="submit"
+                            name="category"
+                            value="{{ category.slug }}"
+                            class="brand-filter-item {% if category.slug == current_category_slug %}active{% endif %}"
+                            data-name="{{ category.name|lower }}">
+                        {% if category.image %}
+                                <img src="{{ category.image.url }}"
+                                    alt="{{ category.name }}"
+                                    class="brand-filter-thumb">
+                           {% else %}
+                                <img src="{% static 'images/category-default.png' %}"
+                                    alt="{{ category.name }}"
+                                    class="brand-filter-thumb">
+                        {% endif %}
+
+                        <span class="brand-filter-name">{{ category.name }}</span>
+                    </button>
+                {% endfor %}
+            </div>
+
+            {% if current_category_slug %}
+                {# If brand is active, keep it while clearing category #}
+                {% if current_brand_slug %}
+                    <a href="?brand={{ current_brand_slug }}" class="clear-filter-link">
+                        Clear category filter
+                    </a>
+                {% else %}
+                    <a href="{% url 'product_list' %}" class="clear-filter-link">
+                        Clear category filter
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- 🔹 BRAND FILTER (SECOND, WITH IMAGES) -->
+        <div class="filter-section" style="margin-top: 16px;">
+            <div class="filter-section-header">
+                <span>Brand</span>
+                <span class="filter-chevron">▾</span>
+            </div>
+
+            <!-- Search brands -->
+            <div class="brand-search">
+                <input type="text"
+                       id="brandSearchInput"
+                       placeholder="Search brands..."
+                       onkeyup="filterBrands()">
+            </div>
+
+            <!-- 2-column brand grid -->
+            <div class="brand-filter-list" id="brandFilterList">
+                    {% for brand in brands %}
+                        <button type="submit"
+                                name="brand"
+                                value="{{ brand.slug }}"
+                                class="brand-filter-item {% if brand.slug == current_brand_slug %}active{% endif %}"
+                                data-name="{{ brand.name|lower }}">
+
+                            {% if brand.image %}
+                                <img src="{{ brand.image.url }}"
+                                    alt="{{ brand.name }}"
+                                    class="brand-filter-thumb">
+                            {% else %}
+                                <img src="{% static 'images/brand-default.png' %}"
+                                    alt="{{ brand.name }}"
+                                    class="brand-filter-thumb">
+                            {% endif %}
+
+                            <span class="brand-filter-name">{{ brand.name }}</span>
+                        </button>
+                    {% endfor %}
+            </div>
+
+
+            {% if current_brand_slug %}
+                {# If category is active, keep it while clearing brand #}
+                {% if current_category_slug %}
+                    <a href="?category={{ current_category_slug }}" class="clear-filter-link">
+                        Clear brand filter
+                    </a>
+                {% else %}
+                    <a href="{% url 'product_list' %}" class="clear-filter-link">
+                        Clear brand filter
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </form>
+
+    <!-- ========== PRODUCTS AREA ========== -->
+    <section class="products-area">
+        <h1 class="page-title">Products</h1>
+        <p class="page-subtitle">Browse all available products below.</p>
+
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <a href="{% url 'product_detail' product.id %}" class="product-link">
+                        <div class="product-image-wrapper">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="no-image">No Image</div>
+                            {% endif %}
+                        </div>
+                        <div class="product-name">{{ product.name }}</div>
+                    </a>
+
+                    {% if product.brand %}
+                        <div class="product-brand"><strong>Brand:</strong> {{ product.brand.name }}</div>
+                    {% endif %}
+                    <div class="product-price">{{ product.price }} KD</div>
+                    <div class="product-stock">In stock: {{ product.stock }}</div>
+
+                    {% if request.user.is_authenticated %}
+                        <form method="post"
+                              action="{% url 'add_to_cart' product.id %}"
+                              class="add-to-cart-form">
+                            {% csrf_token %}
+                            <label for="qty_{{ product.id }}">Qty:</label>
+                            <input type="number"
+                                   name="quantity"
+                                   id="qty_{{ product.id }}"
+                                   value="1"
+                                   min="1">
+                            <button type="submit" class="btn-cart">Add to Cart</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn-secondary login-btn">
+                            Login to Add to Cart
+                        </a>
+                    {% endif %}
+
+                    {% if request.user.is_staff %}
+                        <div class="product-admin-actions" style="margin-top:8px;">
+                            <a href="{% url 'product_edit' product.id %}"
+                               class="btn-small btn-secondary"
+                               style="display: block; width: 100%; text-align: center;">
+                                ✏️ Edit Product
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% empty %}
+                <p>No products found.</p>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+
+<!-- Brand & Category search JS -->
+<script>
+function filterBrands() {
+    const input = document.getElementById("brandSearchInput");
+    const filter = input.value.toLowerCase();
+    const items = document.querySelectorAll("#brandFilterList .brand-filter-item");
+
+    items.forEach(item => {
+        const name = item.dataset.name;
+        item.style.display = name.includes(filter) ? "flex" : "none";
+    });
+}
+
+function filterCategories() {
+    const input = document.getElementById("categorySearchInput");
+    const filter = input.value.toLowerCase();
+    const items = document.querySelectorAll("#categoryFilterList .brand-filter-item");
+
+    items.forEach(item => {
+        const name = item.dataset.name;
+        item.style.display = name.includes(filter) ? "flex" : "none";
+    });
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,251 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Home - Ecom{% endblock %}
+{% load static %}
+{% block content %}
+
+<!-- 🏠 Welcome section -->
+<h1 class="page-title">Welcome to Ecom Shop</h1>
+<p class="page-subtitle">Choose an option below to get started:</p>
+
+<!-- 🧾 Two main options -->
+<div class="home-options">
+    <a href="{% url 'product_list' %}" class="option-card">
+        <span class="option-icon">🛒</span>
+        <span class="option-text">Browse Products</span>
+    </a>
+    {% if request.user.is_staff %}
+    <a href="{% url 'order_list' %}" class="option-card">
+        <span class="option-icon">📦</span>
+        <span class="option-text">View All Orders</span>
+    </a>
+    {% endif %}
+</div>
+
+{# ================= TOP BRANDS STRIP ================= #}
+<section class="home-section">
+    <h2 class="home-section-title">Top Brands</h2>
+
+    <div class="top-brands-row">
+        {# show first 12 brands; remove |slice if you want all #}
+        {% for brand in all_brands|slice:":20" %}
+            <a href="{% url 'brand_products' brand.slug %}" class="top-brand-card">
+                <div class="top-brand-avatar">
+                    {% if brand.image %}
+                        <img src="{{ brand.image.url }}" alt="{{ brand.name }}">
+                    {% else %}
+                        <img src="{% static 'images/default-brand.png' %}" alt="{{ brand.name }}">
+                    {% endif %}
+                </div>
+                <div class="top-brand-name">
+                    {{ brand.name }}
+                </div>
+            </a>
+        {% empty %}
+            <p>No brands found.</p>
+        {% endfor %}
+    </div>
+</section>
+
+
+
+<!-- 📦 Products section header -->
+<div class="home-section-header" style="margin-top: 20px;">
+    <h2 class="home-section-title">Products</h2>
+    <a href="{% url 'product_list' %}" class="home-view-all">View All</a>
+</div>
+
+<!-- 🧱 Horizontal product row (limit to 10 products) -->
+<div class="home-product-row">
+    {% for product in products|slice:":10" %}
+        <div class="home-card">
+
+            <a href="{% url 'product_detail' product.id %}" style="text-decoration:none;color:inherit;">
+                <div class="home-card-image">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="no-image">No Image</div>
+                    {% endif %}
+                </div>
+
+                <div class="home-card-content">
+                    <div class="home-size-text">
+                        In stock: {{ product.stock }}
+                    </div>
+
+                    <div class="home-product-name">{{ product.name }}</div>
+                     <p><strong>Brand:</strong> {{ product.brand.name }}</p>
+                    <div class="home-price">KWD {{ product.price }}</div>
+                </div>
+            </a>
+
+            <div class="home-card-bottom">
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'add_to_cart' product.id %}" style="width:100%;margin:0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="home-add-btn">Add</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="home-add-btn">Add</a>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p style="padding: 20px;">No products available.</p>
+    {% endfor %}
+</div>
+
+{% if brand_sections %}
+    {% for section in brand_sections %}
+        <!-- 🔖 Brand title -->
+        <div class="home-section-header" style="margin-top:30px;">
+            <h2 class="home-section-title">{{ section.brand.name }}</h2>
+            {# optional: link to full brand page #}
+            <a href="{% url 'brand_products' section.brand.slug %}" class="home-view-all">View All</a>
+
+
+        </div>
+
+        <!-- 🔁 Featured brand -->
+        <div class="home-product-row">
+            {% for product in section.products %}
+                <div class="home-card">
+
+                    <a href="{% url 'product_detail' product.id %}" style="text-decoration:none;color:inherit;">
+                        <div class="home-card-image">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="no-image">No Image</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="home-card-content">
+                            <div class="home-size-text">
+                                In stock: {{ product.stock }}
+                            </div>
+
+                            <div class="home-product-name">{{ product.name }}</div>
+                            <p><strong>Brand:</strong> {{ product.brand.name }}</p>
+                            <div class="home-price">KWD {{ product.price }}</div>
+                        </div>
+                    </a>
+
+                    <div class="home-card-bottom">
+                        {% if request.user.is_authenticated %}
+                            <form method="post" action="{% url 'add_to_cart' product.id %}" style="width:100%;margin:0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="home-add-btn">Add</button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="home-add-btn">Add</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p style="padding:20px;">No products for this brand.</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+{% if recently_viewed %}
+    <div class="home-section-header" style="margin-top:30px;">
+        <h2 class="home-section-title">Recently Viewed</h2>
+    </div>
+
+    <div class="home-product-row">
+        {% for product in recently_viewed %}
+            <div class="home-card">
+                <div class="home-card-image">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        <span>No Image</span>
+                    {% endif %}
+                </div>
+
+                <div class="home-card-content">
+                    <div class="home-product-name">{{ product.name }}</div>
+                    <div class="home-price">KWD {{ product.price }}</div>
+                </div>
+
+                <div class="home-card-bottom">
+                    {% if request.user.is_authenticated %}
+                        <form method="post" action="{% url 'add_to_cart' product.id %}" style="width:100%;margin:0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="home-add-btn">Add</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="home-add-btn">Add</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if category_sections %}
+    {% for section in category_sections %}
+        <!-- 🏷 Category title -->
+        <div class="home-section-header" style="margin-top:30px;">
+            <h2 class="home-section-title">{{ section.category.name }}</h2>
+
+            <!-- ⭐ View All for category -->
+            <a href="{% url 'category_products' section.category.slug %}" class="home-view-all">
+                View All
+            </a>
+        </div>
+
+        <!-- 🔁 SAME horizontal product row layout -->
+        <div class="home-product-row">
+            {% for product in section.products %}
+                <div class="home-card">
+
+                    <a href="{% url 'product_detail' product.id %}" style="text-decoration:none;color:inherit;">
+                        <div class="home-card-image">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="no-image">No Image</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="home-card-content">
+                            <div class="home-size-text">
+                                In stock: {{ product.stock }}
+                            </div>
+
+                            <div class="home-product-name">{{ product.name }}</div>
+                            <p><strong>Brand:</strong> {{ product.brand.name }}</p>
+                            <div class="home-price">KWD {{ product.price }}</div>
+                        </div>
+                    </a>
+
+                    <div class="home-card-bottom">
+                        {% if request.user.is_authenticated %}
+                            <form method="post" action="{% url 'add_to_cart' product.id %}" style="width:100%;margin:0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="home-add-btn">Add</button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="home-add-btn">Add</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p style="padding:20px;">No products in this category.</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endif %}
+
+
+
+{% endblock %}

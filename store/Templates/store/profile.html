@@ -1,0 +1,72 @@
+{% extends 'store/base.html' %}
+
+{% block title %}My Profile - Ecom{% endblock %}
+
+{% block content %}
+
+<!-- 👤 Profile Header -->
+<div class="profile-header">
+    <h1 class="page-title">My Profile</h1>
+    <p class="page-subtitle">Manage your personal details and account information.</p>
+</div>
+
+<!-- 🌟 Profile Container (2 Column Layout) -->
+<div class="profile-container">
+
+    <!-- LEFT COLUMN -->
+    <div class="profile-left">
+
+        <!-- Avatar -->
+        <img 
+            src="https://ui-avatars.com/api/?name={{ request.user.username }}&background=1a73e8&color=fff&size=110" 
+            class="profile-avatar"
+            alt="Profile Avatar"
+        >
+
+        <!-- Username -->
+        <div class="profile-username">
+            {{ request.user.username }}
+        </div>
+
+        <!-- Email -->
+        <div class="profile-email">
+            {{ request.user.email }}
+        </div>
+
+        <!-- Edit Profile Button -->
+        <a href="{% url 'profile_edit' %}" class="profile-edit-btn">
+            Edit Profile
+        </a>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="profile-right">
+
+        <div class="profile-section-title">Account Details</div>
+
+        <div class="profile-item">
+            <span class="profile-label">Full Name:</span>
+            <span class="profile-value">{{ profile.full_name|default:"Not set" }}</span>
+        </div>
+
+        <div class="profile-item">
+            <span class="profile-label">Phone:</span>
+            <span class="profile-value">{{ profile.phone|default:"Not set" }}</span>
+        </div>
+
+        <div class="profile-item">
+            <span class="profile-label">Address:</span>
+            <span class="profile-value">{{ profile.address|default:"Not set" }}</span>
+        </div>
+
+        <div class="profile-item">
+            <span class="profile-label">Joined:</span>
+            <span class="profile-value">{{ request.user.date_joined|date:"d M Y" }}</span>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

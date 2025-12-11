@@ -1,0 +1,55 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Session Cart - Ecom{% endblock %}
+
+{% block content %}
+    <h1 class="page-title">Session Cart 🧺</h1>
+    <p class="page-subtitle">
+        This cart is stored in your browser session (Assignment 12).
+    </p>
+
+    {% if not items %}
+        <p>Your session cart is empty.</p>
+        <a href="{% url 'product_list' %}" class="btn-primary">Browse Products</a>
+    {% else %}
+        <table class="order-items-table">
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price (each)</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>
+                    <form method="post" action="{% url 'session_update_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <input type="number" name="quantity" value="{{ item.quantity }}" min="0" style="width:60px;">
+                        <button type="submit" class="btn-secondary" style="padding:4px 8px;font-size:12px;">
+                            Update
+                        </button>
+                    </form>
+                </td>
+                <td>{{ item.product.price }} KD</td>
+                <td>{{ item.line_total }} KD</td>
+                <td>
+                    <form method="post" action="{% url 'session_remove_from_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="cart-remove-link">🗑 Remove</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <div class="cart-summary">
+            <div class="cart-summary-row">
+                <span>Total</span>
+                <span class="cart-summary-total">KWD {{ total_amount }}</span>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

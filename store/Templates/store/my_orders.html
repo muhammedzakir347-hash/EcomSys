@@ -1,0 +1,67 @@
+{% extends 'store/base.html' %}
+
+{% block title %}My Orders - Ecom{% endblock %}
+
+{% block content %}
+
+    <!-- 📦 My Orders page -->
+    <h1 class="page-title">My Orders</h1>
+    <p class="page-subtitle">Here are all the orders placed from your account.</p>
+
+    <div class="orders-grid">
+        {% for order in orders %}
+            <div class="order-card">
+                <!-- Header: Order ID + date -->
+                <div class="order-header">
+                    <div class="order-id">Order #{{ order.id }}</div>
+                    <span class="badge">
+                        {{ order.order_date|date:"Y-m-d H:i" }}
+                    </span>
+                </div>
+
+                <!-- Status badge -->
+                <div class="order-status" style="margin:6px 0;">
+                    Status:
+                    <span class="status-badge status-{{ order.status }}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+
+                <!-- Thumbnail: first product image from this order -->
+                {% with item=order.items.first %}
+                    {% if item and item.product.image %}
+                        <img src="{{ item.product.image.url }}"
+                             alt="{{ item.product.name }}"
+                             style="width:70px;height:70px;object-fit:cover;border-radius:6px;margin-bottom:10px;">
+                    {% else %}
+                        <div style="
+                            width:70px;
+                            height:70px;
+                            background:#ddd;
+                            border-radius:6px;
+                            margin-bottom:10px;
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            font-size:11px;
+                        ">
+                            No Image
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <!-- Summary info -->
+                <p><strong>Items:</strong> {{ order.total_items }}</p>
+                <p><strong>Total:</strong> {{ order.total_amount }} KD</p>
+
+                <!-- Link to full order detail -->
+                <a href="{% url 'order_detail' order.id %}" class="btn-primary">
+                    View Details
+                </a>
+            </div>
+        {% empty %}
+            <p>You have no orders yet.</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

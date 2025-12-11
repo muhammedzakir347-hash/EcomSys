@@ -1,0 +1,72 @@
+{% extends 'store/base.html' %}
+
+{% block title %}
+    {% if mode == 'create' %}Add Product - Ecom{% else %}Edit Product - Ecom{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">
+    {% if mode == 'create' %}Add New Product{% else %}Edit Product{% endif %}
+</h1>
+<p class="page-subtitle">
+    {% if mode == 'create' %}
+        Fill in the details below to create a new product.
+    {% else %}
+        Update the product details and save your changes.
+    {% endif %}
+</p>
+
+<!-- ✅ Form inside unified card -->
+<div class="product-form-card">
+    <form method="post" enctype="multipart/form-data" class="product-form">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+        <div class="form-group">
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
+        </div>
+        {% endfor %}
+
+        <!-- Image preview -->
+        <div id="image-preview" style="margin-bottom:15px;">
+            {% if form.instance.image %}
+                <img src="{{ form.instance.image.url }}" alt="Product Image" style="width:150px; height:150px; object-fit:contain; border-radius:8px;">
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                {% if mode == 'create' %}Create Product{% else %}Save Changes{% endif %}
+            </button>
+            <a href="{% url 'product_list' %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Preview uploaded image
+    const imageInput = document.querySelector('input[type="file"][name="image"]');
+    const previewContainer = document.getElementById('image-preview');
+
+    if(imageInput) {
+        imageInput.addEventListener('change', function() {
+            previewContainer.innerHTML = '';
+            const file = this.files[0];
+            if(file) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.style.width = '150px';
+                img.style.height = '150px';
+                img.style.objectFit = 'contain';
+                img.style.borderRadius = '8px';
+                previewContainer.appendChild(img);
+            }
+        });
+    }
+</script>
+
+{% endblock %}

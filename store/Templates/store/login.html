@@ -1,0 +1,47 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Login - Ecom{% endblock %}
+
+{% block content %}
+
+    <!-- 🔐 Login Page -->
+    <div class="auth-container">
+        <div class="auth-card">
+
+            <!-- Page Title -->
+            <h1 class="page-title" style="margin-bottom:4px;">Login 🔐</h1>
+            <p class="small-text">
+                Access your account to manage your cart, orders, and dashboard.
+            </p>
+
+            <!-- Login Form -->
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    <input type="text" name="username" id="id_username" required>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="id_password">Password</label>
+                    <input type="password" name="password" id="id_password" required>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn-primary" style="width:100%;margin-top:10px;">
+                    Login
+                </button>
+            </form>
+
+            <!-- Register link -->
+            <p class="small-text" style="margin-top:14px;">
+                Don’t have an account?
+                <a href="{% url 'register' %}">Register here</a> 👈
+            </p>
+        </div>
+    </div>
+
+{% endblock %}

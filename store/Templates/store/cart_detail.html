@@ -1,0 +1,135 @@
+{% extends 'store/base.html' %}
+
+{% block title %}My Cart - Ecom{% endblock %}
+
+{% block content %}
+
+<section class="cart-page">
+
+    <!-- 🧺 Cart page header -->
+    <header class="cart-header">
+        <h1 class="page-title">My Cart</h1>
+        <p class="page-subtitle">Review your selected items before you proceed.</p>
+    </header>
+
+    {% if not cart or not items %}
+        <!-- Empty cart state -->
+        <div class="cart-empty-state">
+            <div class="cart-empty-emoji">🛒</div>
+            <h2>Your cart is empty</h2>
+            <p>Looks like you haven’t added anything yet.</p>
+            <a href="{% url 'product_list' %}" class="btn-primary">
+                Browse Products
+            </a>
+        </div>
+
+    {% else %}
+
+        <!-- 🧾 List of cart items (card style) -->
+        <div class="cart-items-wrapper">
+
+            {% for item in items %}
+                <div class="cart-item-card">
+
+                    <!-- LEFT SIDE: image + info -->
+                    <div class="cart-item-left">
+                        <div class="cart-item-image">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <span class="no-image">No Image</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="cart-item-info">
+                            <!-- Product name -->
+                            <div class="cart-item-name">
+                                {{ item.product.name }}
+                            </div>
+
+                            <!-- Short description (truncated) -->
+                            <div class="cart-item-subtext">
+                                {{ item.product.description|default:"No description available."|truncatewords:15 }}
+                            </div>
+
+                            <!-- Remove link -->
+                            <div class="cart-item-actions">
+                                <form method="post"
+                                      action="{% url 'remove_cart_item' item.id %}"
+                                      style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="cart-remove-link">
+                                        🗑 Remove
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT SIDE: price + quantity control -->
+                    <div class="cart-item-right">
+                        <!-- Unit price -->
+                        <div class="cart-item-price">
+                            KWD {{ item.product.price }}
+                        </div>
+
+                        <!-- Quantity control -->
+                        <form method="post"
+                              action="{% url 'update_cart_item' item.id %}"
+                              class="qty-form">
+                            {% csrf_token %}
+
+                            <!-- Minus button -->
+                            <button type="submit"
+                                    name="quantity"
+                                    value="{{ item.quantity|add:'-1' }}"
+                                    class="qty-btn">
+                                –
+                            </button>
+
+                            <!-- Current quantity -->
+                            <span class="qty-value">{{ item.quantity }}</span>
+
+                            <!-- Plus button -->
+                            <button type="submit"
+                                    name="quantity"
+                                    value="{{ item.quantity|add:'1' }}"
+                                    class="qty-btn">
+                                +
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <!-- 💰 Cart total summary -->
+        <aside class="cart-summary">
+            <div class="cart-summary-row">
+                <span>Items</span>
+                <span>{{ items|length }}</span>
+            </div>
+
+            <div class="cart-summary-row">
+                <span>Total</span>
+                <span class="cart-summary-total">KWD {{ total_amount }}</span>
+            </div>
+
+            <div class="cart-summary-actions">
+                <a href="{% url 'product_list' %}" class="btn-secondary">
+                    ← Continue Shopping
+                </a>
+
+                <!-- Future: add Checkout view -->
+                <button class="btn-primary" disabled>
+                    Checkout (Coming Soon)
+                </button>
+            </div>
+        </aside>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

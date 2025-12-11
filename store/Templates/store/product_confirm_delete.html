@@ -1,0 +1,33 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Delete Product - Ecom{% endblock %}
+
+{% block content %}
+
+    <!-- 🗑 Delete Product Confirmation (Staff Only) -->
+    <h1 class="page-title">Delete Product</h1>
+    <p class="page-subtitle">
+        Are you sure you want to delete <strong>{{ product.name }}</strong>?  
+        This action cannot be undone.
+    </p>
+
+    <div class="card">
+        <p>
+            <strong>SKU:</strong> {{ product.sku }}<br>
+            <strong>UPC:</strong> {{ product.upc }}<br>
+            <strong>Price:</strong> {{ product.price }} KD<br>
+            <strong>Stock:</strong> {{ product.stock }}
+        </p>
+
+        <form method="post" style="margin-top:10px;">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary" style="background:#db4437;">
+                Yes, delete this product
+            </button>
+            <a href="{% url 'product_list' %}" class="btn-secondary" style="margin-left:8px;">
+                Cancel
+            </a>
+        </form>
+    </div>
+
+{% endblock %}
