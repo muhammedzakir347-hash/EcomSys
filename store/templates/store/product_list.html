@@ -7,11 +7,10 @@
 
 <div class="product-page-layout">
 
-    <!-- ========== FILTER SIDEBAR ========== -->
-    <form method="get" class="filters-card">
+    <!-- ========== FILTER SIDEBAR (DESKTOP) ========== -->
+    <form method="get" class="filters-card desktop-filters">
         <h2 class="filters-title">Filters</h2>
 
-        {# Preserve current filters when clicking another one #}
         {% if current_brand_slug %}
             <input type="hidden" name="brand" value="{{ current_brand_slug }}">
         {% endif %}
@@ -19,14 +18,13 @@
             <input type="hidden" name="category" value="{{ current_category_slug }}">
         {% endif %}
 
-        <!-- 🔹 CATEGORY FILTER (TOP, WITH IMAGES) -->
+        <!-- 🔹 CATEGORY FILTER -->
         <div class="filter-section">
             <div class="filter-section-header">
                 <span>Category</span>
                 <span class="filter-chevron">▾</span>
             </div>
 
-            <!-- Search categories -->
             <div class="brand-search">
                 <input type="text"
                        id="categorySearchInput"
@@ -34,7 +32,6 @@
                        onkeyup="filterCategories()">
             </div>
 
-            <!-- 2-column category grid -->
             <div class="brand-filter-list" id="categoryFilterList">
                 {% for category in categories %}
                     <button type="submit"
@@ -43,42 +40,35 @@
                             class="brand-filter-item {% if category.slug == current_category_slug %}active{% endif %}"
                             data-name="{{ category.name|lower }}">
                         {% if category.image %}
-                                <img src="{{ category.image.url }}"
-                                    alt="{{ category.name }}"
-                                    class="brand-filter-thumb">
-                           {% else %}
-                                <img src="{% static 'images/category-default.png' %}"
-                                    alt="{{ category.name }}"
-                                    class="brand-filter-thumb">
+                            <img src="{{ category.image.url }}"
+                                 alt="{{ category.name }}"
+                                 class="brand-filter-thumb">
+                        {% else %}
+                            <img src="{% static 'images/category-default.png' %}"
+                                 alt="{{ category.name }}"
+                                 class="brand-filter-thumb">
                         {% endif %}
-
                         <span class="brand-filter-name">{{ category.name }}</span>
                     </button>
                 {% endfor %}
             </div>
 
             {% if current_category_slug %}
-                {# If brand is active, keep it while clearing category #}
                 {% if current_brand_slug %}
-                    <a href="?brand={{ current_brand_slug }}" class="clear-filter-link">
-                        Clear category filter
-                    </a>
+                    <a href="?brand={{ current_brand_slug }}" class="clear-filter-link">Clear category filter</a>
                 {% else %}
-                    <a href="{% url 'product_list' %}" class="clear-filter-link">
-                        Clear category filter
-                    </a>
+                    <a href="{% url 'product_list' %}" class="clear-filter-link">Clear category filter</a>
                 {% endif %}
             {% endif %}
         </div>
 
-        <!-- 🔹 BRAND FILTER (SECOND, WITH IMAGES) -->
+        <!-- 🔹 BRAND FILTER -->
         <div class="filter-section" style="margin-top: 16px;">
             <div class="filter-section-header">
                 <span>Brand</span>
                 <span class="filter-chevron">▾</span>
             </div>
 
-            <!-- Search brands -->
             <div class="brand-search">
                 <input type="text"
                        id="brandSearchInput"
@@ -86,50 +76,161 @@
                        onkeyup="filterBrands()">
             </div>
 
-            <!-- 2-column brand grid -->
             <div class="brand-filter-list" id="brandFilterList">
+                {% for brand in brands %}
+                    <button type="submit"
+                            name="brand"
+                            value="{{ brand.slug }}"
+                            class="brand-filter-item {% if brand.slug == current_brand_slug %}active{% endif %}"
+                            data-name="{{ brand.name|lower }}">
+                        {% if brand.image %}
+                            <img src="{{ brand.image.url }}"
+                                 alt="{{ brand.name }}"
+                                 class="brand-filter-thumb">
+                        {% else %}
+                            <img src="{% static 'images/brand-default.png' %}"
+                                 alt="{{ brand.name }}"
+                                 class="brand-filter-thumb">
+                        {% endif %}
+                        <span class="brand-filter-name">{{ brand.name }}</span>
+                    </button>
+                {% endfor %}
+            </div>
+
+            {% if current_brand_slug %}
+                {% if current_category_slug %}
+                    <a href="?category={{ current_category_slug }}" class="clear-filter-link">Clear brand filter</a>
+                {% else %}
+                    <a href="{% url 'product_list' %}" class="clear-filter-link">Clear brand filter</a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </form>
+
+    <!-- ✅ MOBILE FILTER DRAWER (uses SAME filters content) -->
+    <div class="filters-overlay" id="filtersOverlay"></div>
+
+    <div class="filters-drawer" id="filtersDrawer">
+        <div class="filters-drawer-header">
+            <div class="filters-drawer-title">Filters</div>
+            <button class="filters-close" type="button" id="closeFilters" aria-label="Close">✕</button>
+        </div>
+
+        <form method="get" class="filters-card drawer-filters">
+            <h2 class="filters-title">Filters</h2>
+
+            {% if current_brand_slug %}
+                <input type="hidden" name="brand" value="{{ current_brand_slug }}">
+            {% endif %}
+            {% if current_category_slug %}
+                <input type="hidden" name="category" value="{{ current_category_slug }}">
+            {% endif %}
+
+            <!-- 🔹 CATEGORY FILTER -->
+            <div class="filter-section">
+                <div class="filter-section-header">
+                    <span>Category</span>
+                    <span class="filter-chevron">▾</span>
+                </div>
+
+                <div class="brand-search">
+                    <input type="text"
+                           id="categorySearchInputDrawer"
+                           placeholder="Search categories..."
+                           onkeyup="filterCategoriesDrawer()">
+                </div>
+
+                <div class="brand-filter-list" id="categoryFilterListDrawer">
+                    {% for category in categories %}
+                        <button type="submit"
+                                name="category"
+                                value="{{ category.slug }}"
+                                class="brand-filter-item {% if category.slug == current_category_slug %}active{% endif %}"
+                                data-name="{{ category.name|lower }}">
+                            {% if category.image %}
+                                <img src="{{ category.image.url }}"
+                                     alt="{{ category.name }}"
+                                     class="brand-filter-thumb">
+                            {% else %}
+                                <img src="{% static 'images/category-default.png' %}"
+                                     alt="{{ category.name }}"
+                                     class="brand-filter-thumb">
+                            {% endif %}
+                            <span class="brand-filter-name">{{ category.name }}</span>
+                        </button>
+                    {% endfor %}
+                </div>
+
+                {% if current_category_slug %}
+                    {% if current_brand_slug %}
+                        <a href="?brand={{ current_brand_slug }}" class="clear-filter-link">Clear category filter</a>
+                    {% else %}
+                        <a href="{% url 'product_list' %}" class="clear-filter-link">Clear category filter</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <!-- 🔹 BRAND FILTER -->
+            <div class="filter-section" style="margin-top: 16px;">
+                <div class="filter-section-header">
+                    <span>Brand</span>
+                    <span class="filter-chevron">▾</span>
+                </div>
+
+                <div class="brand-search">
+                    <input type="text"
+                           id="brandSearchInputDrawer"
+                           placeholder="Search brands..."
+                           onkeyup="filterBrandsDrawer()">
+                </div>
+
+                <div class="brand-filter-list" id="brandFilterListDrawer">
                     {% for brand in brands %}
                         <button type="submit"
                                 name="brand"
                                 value="{{ brand.slug }}"
                                 class="brand-filter-item {% if brand.slug == current_brand_slug %}active{% endif %}"
                                 data-name="{{ brand.name|lower }}">
-
                             {% if brand.image %}
                                 <img src="{{ brand.image.url }}"
-                                    alt="{{ brand.name }}"
-                                    class="brand-filter-thumb">
+                                     alt="{{ brand.name }}"
+                                     class="brand-filter-thumb">
                             {% else %}
                                 <img src="{% static 'images/brand-default.png' %}"
-                                    alt="{{ brand.name }}"
-                                    class="brand-filter-thumb">
+                                     alt="{{ brand.name }}"
+                                     class="brand-filter-thumb">
                             {% endif %}
-
                             <span class="brand-filter-name">{{ brand.name }}</span>
                         </button>
                     {% endfor %}
-            </div>
+                </div>
 
-
-            {% if current_brand_slug %}
-                {# If category is active, keep it while clearing brand #}
-                {% if current_category_slug %}
-                    <a href="?category={{ current_category_slug }}" class="clear-filter-link">
-                        Clear brand filter
-                    </a>
-                {% else %}
-                    <a href="{% url 'product_list' %}" class="clear-filter-link">
-                        Clear brand filter
-                    </a>
+                {% if current_brand_slug %}
+                    {% if current_category_slug %}
+                        <a href="?category={{ current_category_slug }}" class="clear-filter-link">Clear brand filter</a>
+                    {% else %}
+                        <a href="{% url 'product_list' %}" class="clear-filter-link">Clear brand filter</a>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        </div>
-    </form>
+            </div>
+        </form>
+    </div>
 
     <!-- ========== PRODUCTS AREA ========== -->
     <section class="products-area">
         <h1 class="page-title">Products</h1>
         <p class="page-subtitle">Browse all available products below.</p>
+
+        <!-- ✅ Mobile toolbar (like your screenshot) -->
+        <div class="mobile-toolbar">
+            <a class="pill {% if not current_brand_slug and not current_category_slug %}active{% endif %}"
+               href="{% url 'product_list' %}">All</a>
+
+            <div class="mobile-toolbar-actions">
+                <button class="icon-btn" type="button" id="sortBtn" aria-label="Sort">⇅</button>
+                <button class="icon-btn" type="button" id="openFilters" aria-label="Filters">⚲</button>
+            </div>
+        </div>
 
         <div class="product-grid">
             {% for product in products %}
@@ -152,22 +253,14 @@
                     <div class="product-stock">In stock: {{ product.stock }}</div>
 
                     {% if request.user.is_authenticated %}
-                        <form method="post"
-                              action="{% url 'add_to_cart' product.id %}"
-                              class="add-to-cart-form">
+                        <form method="post" action="{% url 'add_to_cart' product.id %}" class="add-to-cart-form">
                             {% csrf_token %}
                             <label for="qty_{{ product.id }}">Qty:</label>
-                            <input type="number"
-                                   name="quantity"
-                                   id="qty_{{ product.id }}"
-                                   value="1"
-                                   min="1">
+                            <input type="number" name="quantity" id="qty_{{ product.id }}" value="1" min="1">
                             <button type="submit" class="btn-cart">Add to Cart</button>
                         </form>
                     {% else %}
-                        <a href="{% url 'login' %}" class="btn-secondary login-btn">
-                            Login to Add to Cart
-                        </a>
+                        <a href="{% url 'login' %}" class="btn-secondary login-btn">Login to Add to Cart</a>
                     {% endif %}
 
                     {% if request.user.is_staff %}
@@ -188,29 +281,55 @@
 
 </div>
 
-<!-- Brand & Category search JS -->
 <script>
+/* Desktop search */
 function filterBrands() {
     const input = document.getElementById("brandSearchInput");
     const filter = input.value.toLowerCase();
     const items = document.querySelectorAll("#brandFilterList .brand-filter-item");
-
-    items.forEach(item => {
-        const name = item.dataset.name;
-        item.style.display = name.includes(filter) ? "flex" : "none";
-    });
+    items.forEach(item => item.style.display = item.dataset.name.includes(filter) ? "flex" : "none");
 }
-
 function filterCategories() {
     const input = document.getElementById("categorySearchInput");
     const filter = input.value.toLowerCase();
     const items = document.querySelectorAll("#categoryFilterList .brand-filter-item");
-
-    items.forEach(item => {
-        const name = item.dataset.name;
-        item.style.display = name.includes(filter) ? "flex" : "none";
-    });
+    items.forEach(item => item.style.display = item.dataset.name.includes(filter) ? "flex" : "none");
 }
+
+/* Drawer search */
+function filterBrandsDrawer() {
+    const input = document.getElementById("brandSearchInputDrawer");
+    const filter = input.value.toLowerCase();
+    const items = document.querySelectorAll("#brandFilterListDrawer .brand-filter-item");
+    items.forEach(item => item.style.display = item.dataset.name.includes(filter) ? "flex" : "none");
+}
+function filterCategoriesDrawer() {
+    const input = document.getElementById("categorySearchInputDrawer");
+    const filter = input.value.toLowerCase();
+    const items = document.querySelectorAll("#categoryFilterListDrawer .brand-filter-item");
+    items.forEach(item => item.style.display = item.dataset.name.includes(filter) ? "flex" : "none");
+}
+
+/* Drawer open/close */
+(function () {
+    const openBtn = document.getElementById("openFilters");
+    const closeBtn = document.getElementById("closeFilters");
+    const drawer = document.getElementById("filtersDrawer");
+    const overlay = document.getElementById("filtersOverlay");
+
+    function openDrawer() {
+        drawer?.classList.add("is-open");
+        overlay?.classList.add("is-open");
+    }
+    function closeDrawer() {
+        drawer?.classList.remove("is-open");
+        overlay?.classList.remove("is-open");
+    }
+
+    openBtn?.addEventListener("click", openDrawer);
+    closeBtn?.addEventListener("click", closeDrawer);
+    overlay?.addEventListener("click", closeDrawer);
+})();
 </script>
 
 {% endblock %}

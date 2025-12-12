@@ -1952,3 +1952,541 @@ h1, h2, h3, h4, h5, h6 {
     color: #374151;
     max-width: 110px;
 }
+/* =========================================================
+   📱 MOBILE RESPONSIVE PATCH (PASTE AT THE END OF YOUR CSS)
+   ========================================================= */
+
+/* Prevent horizontal scrolling bugs */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Better default spacing on small screens */
+@media (max-width: 992px) {
+  h1, h2, h3, h4, h5, h6 { margin-left: 12px; }
+  .home-size-text { margin-left: 12px; }
+  .home-product-row { margin-left: 12px; }
+  .home-view-all { margin-left: 12px; }
+}
+
+/* ---------------------------
+   🧭 NAVBAR (mobile friendly)
+   --------------------------- */
+@media (max-width: 768px) {
+  .site-header {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  /* Both .nav and .main-nav exist in your CSS — handle both */
+  .nav,
+  .main-nav {
+    width: 100%;
+    margin-left: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .nav-left,
+  .nav-right {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  /* Links become easier to tap */
+  .nav a,
+  .nav-link,
+  .profile-toggle {
+    width: 100%;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  /* Dropdown becomes full width under the button */
+  .profile-dropdown {
+    position: static;
+    width: 100%;
+    min-width: 0;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    display: none;           /* hidden by default on mobile */
+    box-shadow: none;
+    border-radius: 12px;
+    margin-top: 6px;
+  }
+
+  /* Show dropdown on hover still works on desktop
+     For mobile, you can add class "open" with JS later (optional) */
+  .profile-menu:hover .profile-dropdown {
+    display: block;
+  }
+}
+
+/* ---------------------------
+   🏠 HOME CARDS + ROWS
+   --------------------------- */
+@media (max-width: 600px) {
+  .page-title { font-size: 22px; }
+  .page-subtitle { font-size: 14px; padding: 0 12px; }
+
+  .home-options {
+    padding: 0 12px;
+    gap: 12px;
+  }
+
+  .option-card {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .home-card {
+    flex: 0 0 160px;
+  }
+
+  .home-card-image {
+    height: 120px;
+  }
+
+  .top-brands-row {
+    padding: 12px 12px 18px 12px;
+    gap: 16px;
+  }
+
+  .top-brand-card { flex: 0 0 96px; }
+  .top-brand-avatar { width: 80px; height: 80px; }
+  .top-brand-name { font-size: 12px; max-width: 96px; }
+}
+
+/* ---------------------------
+   🛍 PRODUCT GRID (tighter)
+   --------------------------- */
+@media (max-width: 600px) {
+  .product-grid {
+    padding: 12px;
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-card {
+    padding: 12px;
+  }
+
+  .product-image-wrapper {
+    height: 140px;
+  }
+
+  .product-card img {
+    height: 140px;
+  }
+
+  .product-name { font-size: 14px; }
+  .product-price { font-size: 14px; }
+}
+
+/* Single column for very small devices */
+@media (max-width: 380px) {
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------
+   🧩 ADD TO CART STRIP
+   --------------------------- */
+@media (max-width: 600px) {
+  .add-to-cart-form {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .add-to-cart-form input[type="number"] {
+    width: 90px;
+  }
+
+  .btn-cart {
+    width: 100%;
+  }
+}
+
+/* ---------------------------
+   🛒 CART (stack nicely)
+   --------------------------- */
+@media (max-width: 768px) {
+  .cart-item-card {
+    margin-left: 12px;
+    margin-right: 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .cart-item-left {
+    width: 100%;
+  }
+
+  .cart-item-right {
+    width: 100%;
+    text-align: left;
+  }
+
+  .qty-form {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* ---------------------------
+   👤 PROFILE (already 1-col, but spacing)
+   --------------------------- */
+@media (max-width: 768px) {
+  .profile-container {
+    margin: 16px 12px 40px 12px;
+    gap: 12px;
+  }
+
+  .profile-left,
+  .profile-right {
+    padding: 18px 14px;
+  }
+
+  .profile-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .profile-value {
+    text-align: left;
+  }
+}
+
+/* ---------------------------
+   🏷 BRAND PAGE: sidebar -> top
+   --------------------------- */
+@media (max-width: 992px) {
+  .product-page-layout {
+    flex-direction: column;
+    gap: 14px;
+    padding: 0 12px;
+  }
+
+  .filters-card {
+    width: 100%;
+    position: static;   /* remove sticky on mobile */
+    top: auto;
+    margin: 0;
+  }
+
+  .brand-filter-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .products-area {
+    width: 100%;
+  }
+
+  .brand-header {
+    margin: 16px 0 10px 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .brand-title {
+    font-size: 22px;
+  }
+
+  .brand-banner {
+    width: 74px;
+    height: 74px;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand-filter-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------------------------
+   📄 TABLES: prevent overflow
+   --------------------------- */
+@media (max-width: 768px) {
+  .order-items-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* ---------------------------
+   🔒 AUTH FORMS: full width buttons
+   --------------------------- */
+@media (max-width: 480px) {
+  .auth-container { padding: 0 12px; }
+  .auth-card { width: 100%; }
+  .auth-form .btn-primary,
+  .auth-form .btn-secondary { width: 100%; }
+}
+@media (max-width: 768px) {
+  .profile-dropdown { display: none; }
+  .profile-toggle:focus + .profile-dropdown { display: block; }
+  .profile-toggle { outline: none; }
+}
+@media (max-width: 992px) {
+  .filters-card { margin-top: 0 !important; }
+}
+/* =========================================
+   📱 Mobile Bottom Navigation (like image)
+   ========================================= */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  /* Show bottom nav on mobile */
+  .mobile-bottom-nav {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+    z-index: 9999;
+    height: 64px;
+    padding: 6px 6px 8px;
+  }
+
+  .mbn-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    color: #111827;
+    font-size: 12px;
+  }
+
+  .mbn-icon {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .mbn-text {
+    font-size: 11px;
+    color: #4b5563;
+  }
+
+  .mbn-item.active .mbn-text {
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+
+  /* Badge on Cart */
+  .mbn-badge {
+    position: absolute;
+    top: 4px;
+    right: 18px;
+    background: #e53935;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 2px 6px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  /* ✅ Prevent content hiding behind bottom nav */
+  body {
+    padding-bottom: 76px;
+  }
+
+  /* Optional: hide top navbar links on mobile (keep logo only) */
+  /* If you want this, uncomment:
+  .main-nav { display: none; }
+  */
+}
+/* =========================================
+   📱 MOBILE: Hide top nav options
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  /* Hide full top navigation (links, dropdowns) */
+  .main-nav {
+    display: none !important;
+  }
+
+  /* Keep logo centered */
+  .site-header {
+    justify-content: center;
+  }
+
+  .logo {
+    margin: 0 auto;
+    font-size: 18px;
+  }
+}
+/* =========================================
+   📱 Mobile Filter UI (toolbar + drawer)
+   ========================================= */
+
+/* Toolbar hidden on desktop */
+.mobile-toolbar { display: none; }
+
+/* Overlay + Drawer default hidden */
+.filters-overlay,
+.filters-drawer { display: none; }
+
+@media (max-width: 768px) {
+
+  /* Show toolbar on mobile */
+  .mobile-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 10px;
+    background: #55aee0;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .pill.active { background: #3b82f6; }
+
+  .mobile-toolbar-actions {
+    display: inline-flex;
+    gap: 10px;
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ✅ Hide desktop sidebar filters on mobile */
+  .desktop-filters {
+    display: none !important;
+  }
+
+  /* Drawer overlay */
+  .filters-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+    z-index: 9998;
+  }
+
+  .filters-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Drawer panel */
+  .filters-drawer {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 86%;
+    max-width: 380px;
+    background: #fff;
+    transform: translateX(110%);
+    transition: transform .25s ease;
+    z-index: 9999;
+    overflow-y: auto;
+    padding-bottom: 18px;
+  }
+
+  .filters-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  .filters-drawer-header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+    padding: 14px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .filters-drawer-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .filters-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  /* ✅ Reset filters-card inside drawer (removes sticky + margins) */
+  .filters-drawer .filters-card {
+    display: block !important;
+    position: static !important;
+    top: auto !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 14px !important;
+    background: #fff !important;
+  }
+
+  /* ✅ IMPORTANT: correct selector (with dot) */
+  .filters-drawer .brand-filter-list {
+    max-height: none !important;
+    overflow: auto !important;
+  }
+}
