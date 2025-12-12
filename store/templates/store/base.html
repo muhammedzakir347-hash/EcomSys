@@ -15,6 +15,8 @@
 </head>
 
 <body>
+    {% with request.resolver_match.url_name as url_name %}
+
     <!-- ================= HEADER ================ -->
     <header class="site-header">
         <!-- Logo / Brand -->
@@ -22,133 +24,127 @@
             🛒 ZakirShop
         </a>
 
-        {% with request.resolver_match.url_name as url_name %}
-            <nav class="main-nav">
+        <nav class="main-nav">
+            <!-- LEFT SIDE: main links + dropdowns -->
+            <ul class="nav-left">
+                <li class="nav-item">
+                    <a href="{% url 'home' %}"
+                    class="nav-link {% if url_name == 'home' %}active{% endif %}">
+                        🏠 Home
+                    </a>
+                </li>
 
-                <!-- LEFT SIDE: main links + dropdowns -->
-                <ul class="nav-left">
-                    <li class="nav-item">
-                        <a href="{% url 'home' %}"
-                        class="nav-link {% if url_name == 'home' %}active{% endif %}">
-                            🏠 Home
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a href="{% url 'product_list' %}"
+                    class="nav-link {% if url_name == 'product_list' %}active{% endif %}">
+                        📦 Products
+                    </a>
+                </li>
 
-                    <li class="nav-item">
-                        <a href="{% url 'product_list' %}"
-                        class="nav-link {% if url_name == 'product_list' %}active{% endif %}">
-                            📦 Products
-                        </a>
-                    </li>
-
-                    <!-- 🔽 CATEGORIES DROPDOWN -->
-                    <li class="nav-item profile-menu has-dropdown">
-                        <button class="profile-toggle dropdown-toggle" type="button">
-                            📂 Categories ▾
-                        </button>
-                        <div class="profile-dropdown brand-dropdown">
-                            {% for category in all_categories %}
-                                <a href="{% url 'product_list' %}?category={{ category.slug }}"
-                                class="brand-item">
-                                    {% if category.image %}
-                                        <img src="{{ category.image.url }}"
-                                            alt="{{ category.name }}"
-                                            class="brand-thumb">
-                                    {% else %}
-                                        <img src="{% static 'images/category-default.png' %}"
-                                            alt="{{ category.name }}"
-                                            class="brand-thumb">
-                                    {% endif %}
-                                    <span>{{ category.name }}</span>
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </li>
-
-                    <!-- 🔽 BRANDS DROPDOWN -->
-                    <li class="nav-item profile-menu has-dropdown">
-                        <button class="profile-toggle dropdown-toggle" type="button">
-                            🏷️ Brands ▾
-                        </button>
-                        <div class="profile-dropdown brand-dropdown">
-                            {% for brand in all_brands %}
-                                <a href="{% url 'brand_products' brand.slug %}" class="brand-item">
-                                    {% if brand.image and brand.image.name %}
-                                        <img src="{{ brand.image.url }}" alt="{{ brand.name }}" class="brand-thumb">
-                                    {% else %}
-                                        <img src="{% static 'images/default-brand.png' %}" class="brand-thumb" alt="{{ brand.name }}">
-                                    {% endif %}
-                                    <span>{{ brand.name }}</span>
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </li>
-                </ul>
-
-                <!-- RIGHT SIDE: cart + admin + user / auth -->
-                <ul class="nav-right">
-
-                    {% if request.user.is_authenticated %}
-                        <!-- Cart -->
-                        <li class="nav-item">
-                            <a href="{% url 'cart_detail' %}"
-                            class="nav-link nav-cart {% if url_name == 'cart_detail' %}active{% endif %}">
-                                🛒 Cart
-                                {% if cart_item_count %}
-                                    <span class="cart-badge">{{ cart_item_count }}</span>
+                <!-- 🔽 CATEGORIES DROPDOWN -->
+                <li class="nav-item profile-menu has-dropdown">
+                    <button class="profile-toggle dropdown-toggle" type="button">
+                        📂 Categories ▾
+                    </button>
+                    <div class="profile-dropdown brand-dropdown">
+                        {% for category in all_categories %}
+                            <a href="{% url 'product_list' %}?category={{ category.slug }}"
+                            class="brand-item">
+                                {% if category.image %}
+                                    <img src="{{ category.image.url }}"
+                                        alt="{{ category.name }}"
+                                        class="brand-thumb">
+                                {% else %}
+                                    <img src="{% static 'images/category-default.png' %}"
+                                        alt="{{ category.name }}"
+                                        class="brand-thumb">
                                 {% endif %}
+                                <span>{{ category.name }}</span>
                             </a>
-                        </li>
+                        {% endfor %}
+                    </div>
+                </li>
 
-                        <!-- Admin dropdown (if staff) -->
-                        {% if request.user.is_staff %}
-                            <li class="nav-item profile-menu has-dropdown">
-                                <button class="profile-toggle dropdown-toggle" type="button">
-                                    🛠 Admin ▾
-                                </button>
-                                <div class="profile-dropdown">
-                                    <a href="{% url 'product_create' %}">➕ Add Product</a>
-                                    <a href="{% url 'product_list' %}">✏️ Edit Products</a>
-                                    <a href="{% url 'bulk_upload' %}">📤 Bulk Upload</a>
-                                    <a href="{% url 'product_delete_list' %}">🗑️ Delete Products</a>
-                                    <a href="{% url 'order_list' %}">🧾 Manage Orders</a>
-                                </div>
-                            </li>
-                        {% endif %}
+                <!-- 🔽 BRANDS DROPDOWN -->
+                <li class="nav-item profile-menu has-dropdown">
+                    <button class="profile-toggle dropdown-toggle" type="button">
+                        🏷️ Brands ▾
+                    </button>
+                    <div class="profile-dropdown brand-dropdown">
+                        {% for brand in all_brands %}
+                            <a href="{% url 'brand_products' brand.slug %}" class="brand-item">
+                                {% if brand.image and brand.image.name %}
+                                    <img src="{{ brand.image.url }}" alt="{{ brand.name }}" class="brand-thumb">
+                                {% else %}
+                                    <img src="{% static 'images/default-brand.png' %}" class="brand-thumb" alt="{{ brand.name }}">
+                                {% endif %}
+                                <span>{{ brand.name }}</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </li>
+            </ul>
 
-                        <!-- User dropdown -->
+            <!-- RIGHT SIDE: cart + admin + user / auth -->
+            <ul class="nav-right">
+                {% if request.user.is_authenticated %}
+                    <!-- Cart -->
+                    <li class="nav-item">
+                        <a href="{% url 'cart_detail' %}"
+                        class="nav-link nav-cart {% if url_name == 'cart_detail' %}active{% endif %}">
+                            🛒 Cart
+                            {% if cart_item_count %}
+                                <span class="cart-badge">{{ cart_item_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+
+                    <!-- Admin dropdown (if staff) -->
+                    {% if request.user.is_staff %}
                         <li class="nav-item profile-menu has-dropdown">
                             <button class="profile-toggle dropdown-toggle" type="button">
-                                👤 {{ request.user.username }} ▾
+                                🛠 Admin ▾
                             </button>
                             <div class="profile-dropdown">
-                                <a href="{% url 'profile' %}">🙍‍♂️ My Profile</a>
-                                <a href="{% url 'my_orders' %}">📦 My Orders</a>
-                                <a href="{% url 'dashboard' %}">📊 Dashboard</a>
-                                <a href="{% url 'logout' %}">🚪 Logout</a>
+                                <a href="{% url 'product_create' %}">➕ Add Product</a>
+                                <a href="{% url 'product_list' %}">✏️ Edit Products</a>
+                                <a href="{% url 'bulk_upload' %}">📤 Bulk Upload</a>
+                                <a href="{% url 'product_delete_list' %}">🗑️ Delete Products</a>
+                                <a href="{% url 'order_list' %}">🧾 Manage Orders</a>
                             </div>
                         </li>
-
-                    {% else %}
-                        <!-- Guest links -->
-                        <li class="nav-item">
-                            <a href="{% url 'login' %}"
-                            class="nav-link {% if url_name == 'login' %}active{% endif %}">
-                                🔑 Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'register' %}"
-                            class="nav-link {% if url_name == 'register' %}active{% endif %}">
-                                ✍️ Register
-                            </a>
-                        </li>
                     {% endif %}
-                </ul>
 
-            </nav>
-            {% endwith %}
+                    <!-- User dropdown -->
+                    <li class="nav-item profile-menu has-dropdown">
+                        <button class="profile-toggle dropdown-toggle" type="button">
+                            👤 {{ request.user.username }} ▾
+                        </button>
+                        <div class="profile-dropdown">
+                            <a href="{% url 'profile' %}">🙍‍♂️ My Profile</a>
+                            <a href="{% url 'my_orders' %}">📦 My Orders</a>
+                            <a href="{% url 'dashboard' %}">📊 Dashboard</a>
+                            <a href="{% url 'logout' %}">🚪 Logout</a>
+                        </div>
+                    </li>
 
+                {% else %}
+                    <!-- Guest links -->
+                    <li class="nav-item">
+                        <a href="{% url 'login' %}"
+                        class="nav-link {% if url_name == 'login' %}active{% endif %}">
+                            🔑 Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'register' %}"
+                        class="nav-link {% if url_name == 'register' %}active{% endif %}">
+                            ✍️ Register
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     </header>
 
     <!-- ================= MESSAGES ================ -->
@@ -170,6 +166,46 @@
         &copy; {% now "Y" %} ZakirShop.com • 🛍️ Happy Shopping
     </footer>
 
+    <!-- ✅ Mobile Bottom Nav (like screenshot) -->
+    <nav class="mobile-bottom-nav">
+        <a href="{% url 'home' %}" class="mbn-item {% if url_name == 'home' %}active{% endif %}">
+            <span class="mbn-icon">🏠</span>
+            <span class="mbn-text">Home</span>
+        </a>
+
+        <a href="{% url 'product_list' %}" class="mbn-item {% if url_name == 'product_list' %}active{% endif %}">
+            <span class="mbn-icon">📂</span>
+            <span class="mbn-text">Categories</span>
+        </a>
+
+        <a href="{% url 'cart_detail' %}" class="mbn-item {% if url_name == 'cart_detail' %}active{% endif %}">
+            <span class="mbn-icon">🛒</span>
+            <span class="mbn-text">Cart</span>
+            {% if cart_item_count %}
+                <span class="mbn-badge">{{ cart_item_count }}</span>
+            {% endif %}
+        </a>
+
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'my_orders' %}" class="mbn-item {% if url_name == 'my_orders' %}active{% endif %}">
+                <span class="mbn-icon">❤️</span>
+                <span class="mbn-text">My List</span>
+            </a>
+
+            <a href="{% url 'profile' %}" class="mbn-item {% if url_name == 'profile' %}active{% endif %}">
+                <span class="mbn-icon">👤</span>
+                <span class="mbn-text">My Account</span>
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="mbn-item {% if url_name == 'login' %}active{% endif %}">
+                <span class="mbn-icon">👤</span>
+                <span class="mbn-text">Account</span>
+            </a>
+        {% endif %}
+    </nav>
+
     {% block extra_scripts %}{% endblock %}
+
+    {% endwith %}
 </body>
 </html>
